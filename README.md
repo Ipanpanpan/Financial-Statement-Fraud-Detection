@@ -13,13 +13,13 @@ flowchart LR
     API -->|Inference response| Client
 ```
 
-CloudPanel serves as the reverse proxy, routing incoming requests to the FastAPI container. HTTPS is provided with a Let's Encrypt SSL certificate.
+CloudPanel acts as the reverse proxy, routing incoming requests to the FastAPI container. HTTPS is secured with a Let's Encrypt SSL certificate.
 
 ## Model
 
-The inference service uses **L1-penalized Logistic Regression**, trained on **2,012 observations** with an approximately **98:2 class ratio**. The dataset is highly imbalanced, so predictions should be interpreted with that context in mind.
+The inference service uses **L1-penalized Logistic Regression**, trained on **2,012 observations** with an approximately **98:2 class ratio**. Because the dataset is highly imbalanced, predictions should be interpreted with that context in mind.
 
-A probability threshold of **0.60** is used to identify potential fraud cases. The model is intended to serve as an **early warning system**: flagged cases should be reviewed further and are not definitive findings of fraud.
+A probability threshold of **0.60** is used to identify potential fraud cases. The model is intended as an **early warning system**. Flagged cases should be reviewed further and are not definitive findings of fraud.
 
 ## Deployment Stack
 
@@ -30,6 +30,53 @@ A probability threshold of **0.60** is used to identify potential fraud cases. T
 | Server | Ubuntu VPS |
 | Reverse proxy | CloudPanel |
 | SSL certificate | Let's Encrypt |
+
+## Usage
+
+The API provides a secure REST interface for real-time inference.
+
+### Interactive Documentation
+
+Explore the endpoints, view the Pydantic schemas, and try requests through the Swagger UI:
+
+[Open the API documentation](https://api.gloryatk.com/docs)
+
+### Inference Request
+
+**Method:** `POST`  
+**Endpoint:** `https://api.gloryatk.com/predict`
+
+Submit a JSON payload containing financial metrics and accounting indices, such as AQI, DEPI, and SGI, for the evaluated period.
+
+#### Example Request
+
+```bash
+curl -X POST \
+  'https://api.gloryatk.com/predict' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "Receivables-Net(t-1)": 0,
+    "Cash-Gen(t)": 0,
+    "SalesGenAdmExpen - R&Dexpense(t-1)": 0,
+    "Sales(t)": 0,
+    "AQI": 0,
+    "DEPI": 0,
+    "SGI": 0,
+    "DSRI": 0,
+    "TATA": 0,
+    "GMI": 0,
+    "SGAI": 0,
+    "LVGI": 0
+  }'
+```
+
+## Expected JSON Response:
+{
+  "fraud_probability": 0.65,
+  "is_flagged_for_review": true,
+  "processing_time_ms": 12.4
+}
 
 ## Limitations
 
