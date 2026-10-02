@@ -4,3 +4,10 @@ pydantic==2.6.3
 pandas==2.2.1
 scikit-learn==1.6.1
 joblib==1.3.2
+
+# Streamlit SaaS Dashboard Dependencies
+streamlit>=1.32.0
+plotly>=5.20.0
+requests>=2.31.0
+google-generativeai>=0.4.0
+openpyxl>=3.1.2
