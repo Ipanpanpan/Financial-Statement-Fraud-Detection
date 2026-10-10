@@ -32,7 +32,7 @@ except ImportError:
 # 1. CONSTANTS & METRIC SPECIFICATIONS
 # ==============================================================================
 
-DEFAULT_PRODUCTION_API = "https://api.gloryatk.com"
+DEFAULT_PRODUCTION_API = "https://fraud-inference-service-424ikcmnya-uc.a.run.app"
 DEFAULT_LOCAL_API = "http://localhost:8000"
 FRAUD_THRESHOLD = 0.60
 BENEISH_THRESHOLD = -1.78
@@ -708,12 +708,12 @@ def main():
         st.subheader("1. Backend API Endpoint")
         api_preset = st.selectbox(
             "Target Environment",
-            ["Live Production (api.gloryatk.com)", "Local FastAPI (localhost:8000)", "Custom Endpoint"],
+            ["Live Production (Cloud Run)", "Local FastAPI (localhost:8000)", "Custom Endpoint"],
             index=0,
             help="Select the inference server endpoint.",
         )
 
-        if api_preset == "Live Production (api.gloryatk.com)":
+        if api_preset == "Live Production (Cloud Run)":
             default_url = DEFAULT_PRODUCTION_API
         elif api_preset == "Local FastAPI (localhost:8000)":
             default_url = DEFAULT_LOCAL_API
@@ -723,14 +723,14 @@ def main():
         api_base_url = st.text_input(
             "API Base URL",
             value=default_url,
-            placeholder="https://api.gloryatk.com",
+            placeholder="https://fraud-inference-service-424ikcmnya-uc.a.run.app",
             help="Base URL of the Corporate Fraud Inference API.",
         )
 
         bypass_ssl = st.checkbox(
             "Bypass SSL Verification",
-            value=True,
-            help="Recommended for production VPS using temporary self-signed SSL certificate.",
+            value=False,
+            help="Google Cloud Run provides managed SSL. Leave unchecked unless testing against a self-signed proxy.",
         )
 
         # Quick Health Check Button
@@ -891,7 +891,7 @@ def main():
 
     if api_error:
         st.error(f"❌ **API Inference Failed**: {api_error}")
-        st.info("💡 You can run FastAPI locally using: `uvicorn main:app --reload --port 8000` or use `https://api.gloryatk.com`.")
+        st.info("💡 You can run FastAPI locally using: `uvicorn main:app --reload --port 8000` or use `https://fraud-inference-service-424ikcmnya-uc.a.run.app`.")
         return
 
     # Extract API responses
