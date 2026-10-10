@@ -1,0 +1,20 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.venv
+venv/
+env/
+.git
+.gitignore
+.github
+.pytest_cache
+.coverage
+htmlcov/
+*.log
+api_deploy.zip
+Proxy Config.png
+README.md
+sample_financial_statements.csv
+streamlit_app.py
+

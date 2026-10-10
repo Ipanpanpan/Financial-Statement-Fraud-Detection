@@ -21,11 +21,12 @@ Combines a **FastAPI containerized microservice** running an L1-penalized Logist
 flowchart TD
     User([Auditor / Risk Analyst]) -->|Uploads Statements / Evaluates| UI["Streamlit SaaS Dashboard (streamlit_app.py)"]
     
-    subgraph "Dual-Engine Forensic Analytics"
+    subgraph "Dual-Engine Forensic Analytics & MLOps Monitoring"
         UI -->|Financial Payload| Proxy["CloudPanel Reverse Proxy (api.gloryatk.com)"]
-        Proxy -->|HTTPS POST /predict| API["FastAPI Docker Container"]
+        Proxy -->|HTTPS POST /predict| API["FastAPI Docker Container / Cloud Run"]
         API --> Model["L1-Penalized Logistic Regression (Threshold ≥ 0.60)"]
         Model -->|Fraud Probability & Verdict| UI
+        API -.->|Streams Features & Predictions| Comet["Comet ML Model Monitoring (Drift & Latency)"]
         
         UI --> Beneish["Beneish 8-Variable Econometric Engine (Cutoff > -1.78)"]
     end
@@ -113,7 +114,7 @@ You can test the system using any of three methods:
 
 ---
 
-## 🛠️ Deployment Stack
+## 🛠️ Deployment & MLOps Stack
 
 | Component | Technology | Role |
 | --- | --- | --- |
@@ -121,8 +122,11 @@ You can test the system using any of three methods:
 | **Inference Microservice** | FastAPI, Uvicorn | Real-time REST API for model predictions |
 | **Machine Learning Engine** | Scikit-Learn, Joblib | L1-Penalized Logistic Regression classifier |
 | **Econometric Model** | Beneish 8-Variable Equation | Classic $-1.78$ Earnings Manipulation Index |
+| **Production Model Monitoring**| Comet ML (`comet_ml`) | Continuous tracking of features, drift, latency & outputs |
 | **Agentic AI** | Google Gemini (`google-generativeai`) | Automated natural language forensic audit reports |
-| **Containerization & Hosting** | Docker, CloudPanel, Ubuntu VPS | High-availability cloud deployment |
+| **CI/CD Pipeline** | GitHub Actions (`.github/workflows/gcp-deploy.yml`) | Automated linting, testing, Docker build & deployment |
+| **Serverless Deployment** | Google Cloud Run & GCP Artifact Registry | Auto-scaling container deployment listening on `$PORT` |
+| **VPS Alternative** | Docker, CloudPanel, Ubuntu VPS | High-availability cloud VPS deployment |
 
 ---
 
